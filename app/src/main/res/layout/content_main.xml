@@ -13,6 +13,15 @@
         android:id="@+id/mv_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:background="@color/blue"
+        android:text="  校园地图  "
+        android:layout_gravity="bottom|left"/>
+
     <RelativeLayout
         android:visibility="gone"
         android:id="@+id/routemap_header"
@@ -217,7 +226,49 @@
             android:textColor="@color/blue"/>
 
     </LinearLayout>
+    <RelativeLayout
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:id="@+id/button_container"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="160dp">
 
+        <Button
+            android:text="S"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/search_button_bg_2"
+            android:id="@+id/button_search"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+        <Button
+            android:text="N"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="30dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/navi_button_bg_1"
+            android:id="@+id/button_navi"
+            android:layout_toLeftOf="@id/button_search"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+        <Button
+            android:text="c"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/button_search"
+            android:background="@drawable/clear_button_bg_3"
+            android:id="@+id/button_clear"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+
+    </RelativeLayout>
 
 
 </FrameLayout>

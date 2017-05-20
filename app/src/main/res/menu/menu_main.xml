@@ -3,15 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.jon.maper.MainActivity">
     <item
-        android:id="@+id/action_search"
-        android:icon="@drawable/ic_location_searching_white_24dp"
-        android:orderInCategory="100"
-        android:title="搜索位置"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_more"
         android:icon="@drawable/ic_local_florist_white_24dp"
         android:orderInCategory="100"
-        android:title="导航"
+        android:title="更多"
         app:showAsAction="ifRoom" />
 </menu>

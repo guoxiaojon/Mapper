@@ -3,6 +3,7 @@
     package="com.example.jon.maper">
 
     <application
+        android:hardwareAccelerated="true"
         android:allowBackup="true"
         android:name=".App"
         android:icon="@mipmap/ic_launcher"

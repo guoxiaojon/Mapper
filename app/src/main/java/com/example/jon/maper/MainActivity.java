@@ -1,5 +1,8 @@
 package com.example.jon.maper;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Rect;
@@ -14,10 +17,13 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -61,6 +67,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static android.view.View.GONE;
 
@@ -82,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements AMapLocationListe
     ImageView mWalk;
     ProgressDialog mProgDialog;
     @BindView(R.id.routemap_header)
-    RelativeLayout mHeader;
+    RelativeLayout mHeader;//导航
     @BindView(R.id.bottom_layout)
     RelativeLayout mBottomLayout;
     @BindView(R.id.firstline)
@@ -322,47 +329,20 @@ public class MainActivity extends AppCompatActivity implements AMapLocationListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            if (mHeader.getVisibility() == View.VISIBLE) {
-                mHeader.setVisibility(GONE);
-                mBottomLayout.setVisibility(GONE);
-                if (isSoftShowing()) {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-                }
-            } else {
-                mHeader.setVisibility(View.VISIBLE);
-                mLLSearch.setVisibility(GONE);
-                //mBottomLayout.setVisibility(View.VISIBLE);
-            }
-            return true;
-        } else if (id == R.id.action_search) {
-            if (mLLSearch.getVisibility() == View.VISIBLE) {
-                mLLSearch.setVisibility(GONE);
-                if (mMarker != null) {
-                    mMarker.destroy();
-                }
-
-            } else {
-                mLLSearch.setVisibility(View.VISIBLE);
-                mHeader.setVisibility(GONE);
-                mBottomLayout.setVisibility(GONE);
+        if(id == R.id.action_more){
+            if(mButtonContainer.getVisibility() == View.VISIBLE){
+                hideButton();
+            }else {
+                showButton();
             }
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -712,5 +692,158 @@ public class MainActivity extends AppCompatActivity implements AMapLocationListe
         });
     }
 
+    public void animShow(final View view){
+        view.setTranslationY(-300f);
+        view.setVisibility(View.VISIBLE);
+        view.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int height = view.getHeight();
+                ObjectAnimator animator = ObjectAnimator.ofFloat(view,"translationY",-height,0);
+                animator.setDuration(300);
+                animator.start();
 
+            }
+        },100);
+
+
+    }
+    public void animHide(final View view){
+        int height = view.getHeight();
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view,"translationY",0,-height);
+        animator.setDuration(300);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                view.setVisibility(GONE);
+            }
+        });
+        animator.start();
+    }
+    @BindView(R.id.button_container)
+    RelativeLayout mButtonContainer;
+    @BindView(R.id.button_search)
+    Button mButtonSearch;
+    @BindView(R.id.button_navi)
+    Button mButtonNavi;
+    @BindView(R.id.button_clear)
+    Button mButtonClear;
+
+    public void showButton(){
+        mButtonSearch.clearAnimation();
+        mButtonNavi.clearAnimation();
+        mButtonClear.clearAnimation();
+        mButtonContainer.setVisibility(View.VISIBLE);
+        Animation anim1 = AnimationUtils.loadAnimation(this,R.anim.anim_translate_in);
+        mButtonNavi.setAnimation(anim1);
+        anim1.start();
+        Animation anim2 = AnimationUtils.loadAnimation(this,R.anim.anim_translate_in);
+        anim2.setStartOffset(150);
+        mButtonSearch.setAnimation(anim2);
+        anim2.start();
+
+        Animation anim3 = AnimationUtils.loadAnimation(this,R.anim.anim_translate_in);
+        anim3.setStartOffset(300);
+        mButtonClear.setAnimation(anim3);
+        anim3.start();
+    }
+
+
+    public void hideButton(){
+        mButtonNavi.clearAnimation();
+        mButtonSearch.clearAnimation();
+        mButtonClear.clearAnimation();
+
+        Animation anim1 = AnimationUtils.loadAnimation(this,R.anim.anim_translate_out);
+        mButtonNavi.setAnimation(anim1);
+        anim1.start();
+
+        Animation anim2 = AnimationUtils.loadAnimation(this,R.anim.anim_translate_out);
+        anim2.setStartOffset(150);
+        mButtonSearch.setAnimation(anim2);
+        anim2.start();
+
+        Animation anim3 = AnimationUtils.loadAnimation(this,R.anim.anim_translate_out);
+        anim3.setStartOffset(300);
+        mButtonClear.setAnimation(anim3);
+        anim3.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mButtonContainer.setVisibility(GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        anim3.start();
+
+    }
+
+    @OnClick(R.id.button_search)
+    public void search(){
+        if (mLLSearch.getVisibility() == View.VISIBLE) {
+            animHide(mLLSearch);
+            if (mMarker != null) {
+                mMarker.destroy();
+            }
+
+        } else {
+            animShow(mLLSearch);
+            if(mHeader.getVisibility() == View.VISIBLE){
+                animHide(mHeader);
+            }
+            mBottomLayout.setVisibility(GONE);
+
+        }
+        hideButton();
+    }
+
+    @OnClick(R.id.button_navi)
+    public void navi(){
+        if (mHeader.getVisibility() == View.VISIBLE) {
+            mBottomLayout.setVisibility(GONE);
+            animHide(mHeader);
+            if (isSoftShowing()) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        } else {
+            animShow(mHeader);
+            if(mLLSearch.getVisibility() == View.VISIBLE){
+                animHide(mLLSearch);
+            }
+        }
+        hideButton();
+    }
+
+    @OnClick(R.id.button_clear)
+    public void clear(){
+        mAMap.clear();
+        hideButton();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mButtonContainer.getVisibility() == View.VISIBLE){
+            hideButton();
+        }else if( mHeader.getVisibility() == View.VISIBLE){
+            animHide(mHeader);
+        }else if(mLLSearch.getVisibility() == View.VISIBLE){
+            animHide(mLLSearch);
+        }else if(mBottomLayout.getVisibility() == View.VISIBLE){
+            mBottomLayout.setVisibility(GONE);
+        }else {
+            super.onBackPressed();
+        }
+
+
+    }
 }
